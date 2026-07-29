@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crea tu retrato — Poppet</title>
+<meta name="description" content="Sube la foto de tu mascota, elige estilo, fondo y tamaño, y arma tu retrato pop paso a paso.">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#FCF4E7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FCF4E7;
+    --cream-2:#F7EAD6;
+    --ink:#221C18;
+    --coral:#FF7A57;
+    --teal:#4CB3A3;
+    --purple:#9B7FD6;
+    --yellow:#F6B531;
+    --pink:#F16C90;
+    --shadow: 0 10px 0 rgba(34,28,24,0.9);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{ scroll-behavior:smooth; color-scheme:light; background:var(--cream); }
+  body{
+    color-scheme:light; background:var(--cream); color:var(--ink);
+    font-family:'Quicksand', sans-serif; font-weight:600; overflow-x:hidden;
+  }
+  input, textarea, select, button{ color-scheme:light; font-family:inherit; }
+  h1,h2,h3,.display{ font-family:'Fredoka', sans-serif; font-weight:600; line-height:1.05; letter-spacing:-0.01em; }
+  a{ color:inherit; text-decoration:none; }
+  ul{ list-style:none; }
+  img,svg{ display:block; max-width:100%; }
+  button{ cursor:pointer; border:none; background:none; }
+  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px; }
+  ::selection{ background:var(--yellow); color:var(--ink); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important; }
+  }
+
+  /* ---------- header (shared style) ---------- */
+  header{ position:sticky; top:0; z-index:60; background:rgba(252,244,231,0.92); backdrop-filter:blur(8px); border-bottom:3px solid var(--ink); }
+  nav.wrap{ display:flex; align-items:center; justify-content:space-between; height:78px; }
+  .logo{ display:flex; align-items:center; gap:2px; font-family:'Fredoka'; font-weight:700; font-size:1.5rem; }
+  .logo .p1{color:var(--coral);} .logo .o{color:var(--teal);} .logo .p2{color:var(--purple);} .logo .e{color:var(--yellow);} .logo .t{color:var(--pink);}
+  .logo-crown{ width:20px; margin-right:2px; transform:rotate(-8deg) translateY(-6px); }
+  .back-link{ display:flex; align-items:center; gap:8px; font-family:'Fredoka'; font-size:0.9rem; padding:10px 18px; border:3px solid var(--ink); border-radius:999px; background:#fff; box-shadow:0 6px 0 rgba(34,28,24,0.9); transition:transform .15s ease, box-shadow .15s ease; }
+  .back-link:hover{ transform:translate(-2px,-2px); box-shadow:0 8px 0 rgba(34,28,24,0.9); }
+
+  /* ---------- progress bar ---------- */
+  .progress-wrap{ background:var(--ink); }
+  .progress-track{ height:8px; background:rgba(255,255,255,0.15); border-radius:999px; overflow:hidden; margin:10px 0; }
+  .progress-fill{ height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg, var(--coral), var(--yellow), var(--teal), var(--purple), var(--pink)); transition:width .4s ease; }
+  .progress-labels{ display:flex; justify-content:space-between; color:#d8cfc4; font-family:'Fredoka'; font-size:0.72rem; padding-bottom:12px; }
+  .progress-labels li.active{ color:var(--yellow); }
+  .progress-labels li{ display:none; }
+  @media (min-width:760px){ .progress-labels li{ display:block; } }
+
+  /* ---------- page hero ---------- */
+  .page-hero{ padding:46px 0 10px; text-align:center; }
+  .page-hero .eyebrow{
+    display:inline-flex; align-items:center; gap:8px; background:var(--ink); color:var(--cream);
+    font-family:'Fredoka'; font-size:0.78rem; font-weight:600; padding:7px 16px; border-radius:999px; margin-bottom:16px; transform:rotate(-1.5deg);
+  }
+  .page-hero h1{ font-size:2.5rem; margin-bottom:10px; }
+  .page-hero h1 .hl{ color:var(--coral); }
+  .page-hero p{ color:#5b4f45; max-width:520px; margin:0 auto; font-size:1rem; line-height:1.5; }
+
+  /* ---------- layout ---------- */
+  .builder{ padding:40px 0 120px; }
+  .builder-grid{ display:grid; grid-template-columns:1fr 360px; gap:44px; align-items:start; }
+  .steps-col{ display:flex; flex-direction:column; gap:54px; }
+
+  .step-block{ scroll-margin-top:120px; }
+  .step-head{ display:flex; align-items:center; gap:14px; margin-bottom:20px; }
+  .step-badge{
+    width:46px; height:46px; border-radius:50%; border:3px solid var(--ink); background:#fff;
+    display:flex; align-items:center; justify-content:center; font-family:'Fredoka'; font-size:1.1rem; font-weight:700;
+    box-shadow:var(--shadow); flex:none;
+  }
+  .step-block:nth-of-type(1) .step-badge{ background:var(--coral); }
+  .step-block:nth-of-type(2) .step-badge{ background:var(--yellow); }
+  .step-block:nth-of-type(3) .step-badge{ background:var(--purple); color:#fff; }
+  .step-block:nth-of-type(4) .step-badge{ background:var(--teal); }
+  .step-block:nth-of-type(5) .step-badge{ background:var(--pink); }
+  .step-head h2{ font-size:1.5rem; }
+  .step-head p{ font-size:0.88rem; color:#5b4f45; font-weight:600; }
+
+  /* upload */
+  .dropzone{
+    border:3px dashed var(--ink); border-radius:26px; background:#fff;
+    padding:40px 24px; text-align:center; position:relative; transition:transform .15s ease, background .15s ease;
+  }
+  .dropzone.drag{ background:var(--cream-2); transform:scale(1.01); }
+  .dropzone input[type=file]{ position:absolute; inset:0; opacity:0; cursor:pointer; }
+  .dz-icon{ width:64px; height:64px; margin:0 auto 14px; border-radius:50%; background:var(--coral); display:flex; align-items:center; justify-content:center; border:3px solid var(--ink); }
+  .dropzone h3{ font-family:'Fredoka'; font-size:1.05rem; margin-bottom:6px; }
+  .dropzone p{ font-size:0.85rem; color:#7a6d62; }
+  .preview-wrap{ display:none; align-items:center; gap:16px; background:#fff; border:3px solid var(--ink); border-radius:22px; padding:16px; box-shadow:var(--shadow); }
+  .preview-wrap.show{ display:flex; }
+  .preview-wrap img{ width:88px; height:88px; object-fit:cover; border-radius:16px; border:2px solid var(--ink); }
+  .preview-info{ flex:1; min-width:0; }
+  .preview-info .fname{ font-family:'Fredoka'; font-size:0.92rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .preview-info .fsize{ font-size:0.78rem; color:#8a7c70; }
+  .preview-remove{ font-family:'Fredoka'; font-size:0.8rem; color:var(--pink); flex:none; padding:6px 10px; border:2px solid var(--ink); border-radius:999px; }
+
+  /* option cards (style / background / size) */
+  .opt-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .opt-grid.bg-grid, .opt-grid.size-grid{ grid-template-columns:repeat(2,1fr); }
+  .opt-card{
+    position:relative; background:#fff; border:3px solid var(--ink); border-radius:20px; padding:18px;
+    text-align:left; transition:transform .15s ease, box-shadow .15s ease; box-shadow:0 6px 0 rgba(34,28,24,0.9);
+  }
+  .opt-card:hover{ transform:translateY(-4px); }
+  .opt-card.selected{ box-shadow:0 6px 0 rgba(34,28,24,0.9), 0 0 0 3px var(--yellow) inset; transform:translateY(-4px); }
+  .opt-card .check{
+    position:absolute; top:10px; right:10px; width:24px; height:24px; border-radius:50%; border:2px solid var(--ink);
+    background:#fff; display:flex; align-items:center; justify-content:center; font-size:0.8rem; opacity:0; transition:opacity .15s ease;
+  }
+  .opt-card.selected .check{ opacity:1; background:var(--yellow); }
+  .opt-swatch{ width:44px; height:44px; border-radius:50%; border:2px solid var(--ink); margin-bottom:12px; }
+  .opt-card h4{ font-family:'Fredoka'; font-size:1rem; margin-bottom:4px; }
+  .opt-card p{ font-size:0.8rem; color:#7a6d62; line-height:1.4; }
+  .opt-card .price-tag{ display:inline-block; margin-top:10px; font-family:'Fredoka'; font-size:0.78rem; background:var(--cream-2); border:2px solid var(--ink); border-radius:999px; padding:3px 10px; }
+
+  .swatch-liso{ background:var(--coral); }
+  .swatch-degradado{ background:linear-gradient(135deg,var(--purple),var(--pink)); }
+  .swatch-escena{ background:var(--teal); }
+  .swatch-transparente{ background:repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%) 0 0/14px 14px; }
+
+  .size-card .dims{ font-family:'Fredoka'; font-size:0.82rem; color:var(--ink); background:var(--cream-2); display:inline-block; padding:3px 10px; border-radius:999px; margin-bottom:8px; }
+
+  /* ---------- upsell callout (mini plan → agregar impresión) ---------- */
+  .upsell-box{ margin-top:16px; background:var(--cream-2); border:3px dashed var(--ink); border-radius:18px; padding:14px 16px; }
+  .upsell-check{ display:flex; align-items:center; gap:12px; cursor:pointer; }
+  .upsell-check input{ position:absolute; opacity:0; width:0; height:0; }
+  .upsell-fake{ width:26px; height:26px; border-radius:8px; border:2px solid var(--ink); background:#fff; flex:none; position:relative; transition:background .15s ease; }
+  .upsell-check input:checked + .upsell-fake{ background:var(--yellow); }
+  .upsell-check input:checked + .upsell-fake::after{ content:"✓"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:0.9rem; font-family:'Fredoka'; }
+  .upsell-text{ flex:1; font-size:0.82rem; line-height:1.4; color:#5b4f45; }
+  .upsell-text strong{ display:block; color:var(--ink); font-family:'Fredoka'; font-size:0.92rem; margin-bottom:2px; }
+  .upsell-price{ font-family:'Fredoka'; font-size:0.85rem; background:#fff; border:2px solid var(--ink); border-radius:999px; padding:4px 11px; flex:none; }
+
+  /* ---------- live preview ---------- */
+  .preview-box{
+    width:100%; aspect-ratio:1/1; border-radius:20px; border:4px solid var(--ink); background:var(--cream-2);
+    display:flex; align-items:center; justify-content:center; overflow:hidden; margin-bottom:20px; position:relative;
+    transition:border-color .25s ease, background .25s ease, aspect-ratio .3s ease;
+  }
+  .preview-placeholder{ display:flex; flex-direction:column; align-items:center; gap:8px; color:#a89c8f; font-family:'Fredoka'; font-size:0.78rem; text-align:center; padding:20px; }
+  .preview-placeholder svg{ width:32px; height:32px; opacity:0.55; }
+  .preview-photo{ width:100%; height:100%; object-fit:cover; display:none; }
+  .preview-tag{ position:absolute; top:10px; left:10px; background:var(--ink); color:var(--cream); font-family:'Fredoka'; font-size:0.65rem; padding:4px 10px; border-radius:999px; opacity:0.85; }
+  .preview-box.pv-liso{ background:var(--coral); }
+  .preview-box.pv-degradado{ background:linear-gradient(135deg,var(--purple),var(--pink)); }
+  .preview-box.pv-escena{ background:radial-gradient(circle at 30% 30%, #FFD98E, var(--yellow)); }
+  .preview-box.pv-transparente{ background:repeating-conic-gradient(#e9e0d2 0% 25%, #fff 0% 50%) 0 0/16px 16px; }
+  .preview-box.pv-est-normal{ border-color:var(--coral); }
+  .preview-box.pv-est-divertido{ border-color:var(--yellow); }
+  .preview-box.pv-est-tierno{ border-color:var(--purple); }
+
+  /* ---------- toast ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:100px; transform:translateX(-50%) translateY(16px);
+    background:var(--ink); color:var(--cream); font-family:'Fredoka'; font-size:0.85rem; line-height:1.4;
+    padding:12px 20px; border-radius:18px; opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+    z-index:80; max-width:min(90vw, 380px); text-align:center; box-shadow:0 8px 0 rgba(34,28,24,0.35);
+  }
+  .toast a{ color:var(--yellow); text-decoration:underline; }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); pointer-events:auto; }
+  @media (max-width:980px){ .toast{ bottom:92px; } }
+
+  textarea.desc-input{
+    width:100%; min-height:130px; border:3px solid var(--ink); border-radius:20px; padding:16px 18px;
+    font-family:'Quicksand'; font-weight:600; font-size:0.95rem; resize:vertical; background:#fff;
+  }
+  textarea.desc-input:focus{ outline:none; box-shadow:0 0 0 3px var(--yellow); }
+  .char-count{ font-size:0.78rem; color:#8a7c70; margin-top:6px; text-align:right; }
+
+  /* ---------- summary card ---------- */
+  .summary-card{
+    background:#fff; border:3px solid var(--ink); border-radius:26px; padding:26px;
+    box-shadow:var(--shadow); position:sticky; top:100px;
+  }
+  .summary-card h3{ font-family:'Fredoka'; font-size:1.15rem; margin-bottom:16px; }
+  .summary-line{ display:flex; justify-content:space-between; align-items:flex-start; font-size:0.88rem; padding:9px 0; border-bottom:2px dashed rgba(34,28,24,0.14); gap:10px; }
+  .summary-line:last-of-type{ border-bottom:none; }
+  .summary-line .lbl{ color:#5b4f45; }
+  .summary-line .val{ font-family:'Fredoka'; text-align:right; }
+  .summary-line .val.pending{ color:#b7ac9f; font-weight:600; font-family:'Quicksand'; font-style:italic; }
+  .summary-total{ display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:16px; border-top:3px solid var(--ink); }
+  .summary-total .lbl{ font-family:'Fredoka'; font-size:1rem; }
+  .summary-total .val{ font-family:'Fredoka'; font-size:1.6rem; color:var(--coral); }
+  .summary-note{ font-size:0.74rem; color:#a89c8f; margin-top:6px; }
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%;
+    font-family:'Fredoka'; font-weight:600; font-size:0.95rem; padding:14px 20px; border-radius:999px;
+    border:3px solid var(--ink); background:var(--yellow); color:var(--ink); box-shadow:var(--shadow);
+    transition:transform .16s ease, box-shadow .16s ease, opacity .16s ease; margin-top:18px;
+  }
+  .btn:hover{ transform:translate(-2px,-3px); box-shadow:0 13px 0 rgba(34,28,24,0.9); }
+  .btn:active{ transform:translate(0,2px); box-shadow:0 4px 0 rgba(34,28,24,0.9); }
+  .btn[disabled]{ opacity:0.55; cursor:not-allowed; }
+  .btn[disabled]:hover{ transform:none; box-shadow:var(--shadow); }
+  .shake{ animation:shake .4s ease; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);} }
+
+  .missing-hint{ font-size:0.78rem; color:var(--pink); margin-top:8px; display:none; }
+  .missing-hint.show{ display:block; }
+
+  /* mobile sticky bar */
+  .mobile-bar{
+    display:none; position:fixed; bottom:0; left:0; right:0; z-index:70;
+    background:var(--ink); color:var(--cream); padding:14px 20px; align-items:center; justify-content:space-between;
+    border-top:3px solid var(--ink);
+  }
+  .mobile-bar .m-total{ font-family:'Fredoka'; }
+  .mobile-bar .m-total b{ color:var(--yellow); font-size:1.15rem; }
+  .mobile-bar button{ font-family:'Fredoka'; background:var(--yellow); color:var(--ink); padding:10px 18px; border-radius:999px; border:2px solid var(--cream); font-size:0.85rem; }
+
+  footer{ padding:30px 0; text-align:center; font-size:0.82rem; color:#8a7c70; border-top:2px solid rgba(34,28,24,0.12); }
+
+  @media (max-width:980px){
+    .builder-grid{ grid-template-columns:1fr; }
+    .summary-card{ position:relative; top:0; }
+    .opt-grid{ grid-template-columns:repeat(3,1fr); }
+    .mobile-bar{ display:flex; }
+    .builder{ padding-bottom:110px; }
+  }
+  @media (max-width:640px){
+    .wrap{ padding:0 20px; }
+    .page-hero h1{ font-size:1.9rem; }
+    .opt-grid{ grid-template-columns:repeat(2,1fr); }
+    .opt-grid.bg-grid, .opt-grid.size-grid{ grid-template-columns:1fr 1fr; }
+    .steps-col{ gap:44px; }
+    .back-link span.txt{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a href="index.html" class="logo" aria-label="Poppet — inicio">
+      <svg class="logo-crown" viewBox="0 0 60 40" fill="var(--ink)"><path d="M2 16 L16 26 L20 2 L30 20 L40 2 L44 26 L58 16 L52 34 L8 34 Z"/></svg>
+      <span class="p1">P</span><span class="o">o</span><span class="p2">p</span><span class="e">p</span><span class="e">e</span><span class="t">t</span>
+    </a>
+    <a class="back-link" href="index.html">← <span class="txt">Volver al inicio</span></a>
+  </nav>
+  <div class="progress-wrap">
+    <div class="wrap">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <ul class="progress-labels">
+        <li data-step="0">Foto</li>
+        <li data-step="1">Estilo</li>
+        <li data-step="2">Fondo</li>
+        <li data-step="3">Tamaño</li>
+        <li data-step="4">Detalles</li>
+      </ul>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero">
+  <div class="wrap">
+    <span class="eyebrow">🎨 arma tu retrato en 5 pasos</span>
+    <h1>Creemos el retrato <span class="hl">pop</span> de tu mascota</h1>
+    <p>Completa cada paso — el resumen y el precio se actualizan solos a tu derecha (o abajo, si estás en el celular).</p>
+  </div>
+</section>
+
+<main class="builder">
+  <div class="wrap builder-grid">
+
+    <div class="steps-col">
+
+      <!-- PASO 1: FOTO -->
+      <div class="step-block" id="step-foto" data-step="0">
+        <div class="step-head">
+          <div class="step-badge">1</div>
+          <div><h2>Sube la foto de tu mascota</h2><p>Una foto nítida y con buena luz da el mejor resultado.</p></div>
+        </div>
+
+        <label class="dropzone" id="dropzone">
+          <div class="dz-icon">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4M12 4l-5 5M12 4l5 5"/><path d="M4 16v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/></svg>
+          </div>
+          <h3>Arrastra tu foto aquí o toca para elegirla</h3>
+          <p>JPG o PNG, hasta 15MB</p>
+          <input type="file" id="fileInput" accept="image/*">
+        </label>
+
+        <div class="preview-wrap" id="previewWrap">
+          <img id="previewImg" src="" alt="Vista previa de la foto subida">
+          <div class="preview-info">
+            <div class="fname" id="previewName">foto.jpg</div>
+            <div class="fsize" id="previewSize">—</div>
+          </div>
+          <button class="preview-remove" id="previewRemove">Quitar</button>
+        </div>
+      </div>
+
+      <!-- PASO 2: ESTILO -->
+      <div class="step-block" id="step-estilo" data-step="1">
+        <div class="step-head">
+          <div class="step-badge">2</div>
+          <div><h2>Elige el estilo</h2><p>Define la actitud del retrato.</p></div>
+        </div>
+        <div class="opt-grid" id="estiloGrid">
+          <button type="button" class="opt-card" data-group="estilo" data-value="normal" data-label="Normal" data-price="10000">
+            <span class="check">✓</span>
+            <div class="opt-swatch" style="background:var(--coral);"></div>
+            <h4>Normal</h4>
+            <p>Fiel y cálido, con los detalles reales de tu mascota.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+          <button type="button" class="opt-card" data-group="estilo" data-value="divertido" data-label="Divertido" data-price="10000">
+            <span class="check">✓</span>
+            <div class="opt-swatch" style="background:var(--yellow);"></div>
+            <h4>Divertido</h4>
+            <p>Caricatura con actitud, expresiones y mucha personalidad.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+          <button type="button" class="opt-card" data-group="estilo" data-value="tierno" data-label="Tierno" data-price="10000">
+            <span class="check">✓</span>
+            <div class="opt-swatch" style="background:var(--purple);"></div>
+            <h4>Tierno</h4>
+            <p>Ojos grandes y formas redondeadas para derretir corazones.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PASO 3: FONDO -->
+      <div class="step-block" id="step-fondo" data-step="2">
+        <div class="step-head">
+          <div class="step-badge">3</div>
+          <div><h2>Elige el fondo</h2><p>El escenario que acompaña a tu mascota.</p></div>
+        </div>
+        <div class="opt-grid bg-grid" id="fondoGrid">
+          <button type="button" class="opt-card" data-group="fondo" data-value="liso" data-label="Color liso" data-price="10000">
+            <span class="check">✓</span>
+            <div class="opt-swatch swatch-liso"></div>
+            <h4>Color liso</h4>
+            <p>Un color plano de la paleta Poppet, limpio y directo.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+          <button type="button" class="opt-card" data-group="fondo" data-value="degradado" data-label="Degradado pop" data-price="10000">
+            <span class="check">✓</span>
+            <div class="opt-swatch swatch-degradado"></div>
+            <h4>Degradado pop</h4>
+            <p>Transición de dos colores para un efecto más vibrante.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+          <button type="button" class="opt-card" data-group="fondo" data-value="escena" data-label="Escena temática" data-price="10000">
+            <span class="check">✓</span>
+            <div class="opt-swatch swatch-escena"></div>
+            <h4>Escena temática</h4>
+            <p>Un mini escenario ilustrado (parque, sofá, espacio, etc).</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+          <button type="button" class="opt-card" data-group="fondo" data-value="transparente" data-label="Transparente" data-price="10000">
+            <span class="check">✓</span>
+            <div class="opt-swatch swatch-transparente"></div>
+            <h4>Transparente</h4>
+            <p>Sin fondo, ideal si quieres usar el retrato en otros diseños.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PASO 4: TAMAÑO -->
+      <div class="step-block" id="step-tamano" data-step="3">
+        <div class="step-head">
+          <div class="step-badge">4</div>
+          <div><h2>Elige el tamaño del cuadro</h2><p>Pensando en dónde lo vas a colgar.</p></div>
+        </div>
+        <div class="opt-grid size-grid" id="tamanoGrid">
+          <button type="button" class="opt-card size-card" data-group="tamano" data-value="mini" data-label="Mini" data-price="10000">
+            <span class="check">✓</span>
+            <span class="dims">20 × 20 cm</span>
+            <h4>Mini</h4>
+            <p>Ideal para repisas o escritorio.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+          <button type="button" class="opt-card size-card" data-group="tamano" data-value="chico" data-label="Chico" data-price="10000">
+            <span class="check">✓</span>
+            <span class="dims">30 × 40 cm</span>
+            <h4>Chico</h4>
+            <p>El tamaño más pedido para piezas y living.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+          <button type="button" class="opt-card size-card" data-group="tamano" data-value="mediano" data-label="Mediano" data-price="10000">
+            <span class="check">✓</span>
+            <span class="dims">40 × 50 cm</span>
+            <h4>Mediano</h4>
+            <p>Buen protagonismo en cualquier pared.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+          <button type="button" class="opt-card size-card" data-group="tamano" data-value="grande" data-label="Grande" data-price="10000">
+            <span class="check">✓</span>
+            <span class="dims">50 × 70 cm</span>
+            <h4>Grande</h4>
+            <p>Para hacerlo el centro de atención de la sala.</p>
+            <span class="price-tag">+$10.000</span>
+          </button>
+        </div>
+
+        <div class="upsell-box" id="upsellBox" style="display:none;">
+          <label class="upsell-check">
+            <input type="checkbox" id="upsellCheckbox">
+            <span class="upsell-fake"></span>
+            <span class="upsell-text"><strong>Agregar impresión física</strong>El plan Mini es solo digital — súmale el cuadro enmarcado listo para colgar.</span>
+            <span class="upsell-price">+$10.000</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- PASO 5: DESCRIPCIÓN -->
+      <div class="step-block" id="step-descripcion" data-step="4">
+        <div class="step-head">
+          <div class="step-badge">5</div>
+          <div><h2>Cuéntanos de tu mascota</h2><p>Nombre, personalidad, detalles que no se ven en la foto — todo suma.</p></div>
+        </div>
+        <textarea class="desc-input" id="descInput" maxlength="400" placeholder="Ej: se llama Tostado, es un golden súper juguetón, le encanta sacar la lengua y tiene una mancha café en la oreja izquierda..."></textarea>
+        <div class="char-count"><span id="charCount">0</span>/400</div>
+      </div>
+
+    </div>
+
+    <!-- SUMMARY -->
+    <aside class="summary-card" id="summaryCard">
+      <div class="preview-box" id="previewBox">
+        <div class="preview-placeholder" id="previewPlaceholder">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7l1.5-3h5L16 7"/><circle cx="12" cy="13" r="3.2"/></svg>
+          <span>Tu vista previa<br>aparecerá aquí</span>
+        </div>
+        <img class="preview-photo" id="previewPhoto" alt="Vista previa de tu retrato">
+        <span class="preview-tag">Vista previa</span>
+      </div>
+      <h3>Tu resumen</h3>
+      <div class="summary-line"><span class="lbl">Foto</span><span class="val pending" id="sumFoto">Pendiente</span></div>
+      <div class="summary-line"><span class="lbl">Estilo</span><span class="val pending" id="sumEstilo">Pendiente</span></div>
+      <div class="summary-line"><span class="lbl">Fondo</span><span class="val pending" id="sumFondo">Pendiente</span></div>
+      <div class="summary-line"><span class="lbl">Tamaño</span><span class="val pending" id="sumTamano">Pendiente</span></div>
+      <div class="summary-line" id="sumImpresionLine" style="display:none;"><span class="lbl">Impresión extra</span><span class="val" id="sumImpresion">+$10.000</span></div>
+      <div class="summary-total">
+        <span class="lbl">Total</span>
+        <span class="val" id="sumTotal">$10.000</span>
+      </div>
+      <p class="summary-note">Precio referencial mientras terminamos la calculadora final. Base $10.000 + $10.000 por cada elección.</p>
+      <button class="btn" id="submitBtn">Enviar mi pedido 🎉</button>
+      <p class="missing-hint" id="missingHint">Te faltan pasos por completar — te llevamos al primero. 👆</p>
+    </aside>
+
+  </div>
+</main>
+
+<div class="mobile-bar" id="mobileBar">
+  <div class="m-total">Total <b id="mobileTotal">$10.000</b></div>
+  <button id="mobileSubmit">Enviar pedido</button>
+</div>
+
+<footer>
+  <div class="wrap">© 2026 Poppet · hola@poppet.cl · Hecho con 🐾 en Chile</div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  /* =========================================================
+     CALCULADORA DE PRECIO
+     -----------------------------------------------------------
+     Estructura lista para reemplazar por la fórmula real.
+     Por ahora TODO vale $10.000 fijo (base + cada elección).
+     Para conectar la fórmula final, solo hay que editar los
+     valores de PRICING y/o la lógica dentro de calcularPrecio().
+  ========================================================== */
+  const PRICING = {
+    base: 10000,
+    estilo:  { normal: 10000, divertido: 10000, tierno: 10000 },
+    fondo:   { liso: 10000, degradado: 10000, escena: 10000, transparente: 10000 },
+    tamano:  { mini: 10000, chico: 10000, mediano: 10000, grande: 10000 },
+    impresion: 10000 // upsell: agregar impresión física al plan Mini (que es solo digital)
+  };
+
+  function calcularPrecio(sel){
+    // TODO: reemplazar esta función por la fórmula de precios definitiva.
+    let total = PRICING.base;
+    if(sel.estilo) total += PRICING.estilo[sel.estilo] || 0;
+    if(sel.fondo)  total += PRICING.fondo[sel.fondo] || 0;
+    if(sel.tamano) total += PRICING.tamano[sel.tamano] || 0;
+    if(sel.tamano === 'mini' && sel.impresion) total += PRICING.impresion;
+    return total;
+  }
+
+  function formatCLP(n){
+    return '$' + n.toLocaleString('es-CL');
+  }
+
+  const state = { foto:null, estilo:null, fondo:null, tamano:null, descripcion:'', impresion:false };
+  let photoDataUrl = null;
+  let orderSubmitted = false;
+
+  /* ---------- toast ---------- */
+  const toastEl = document.getElementById('toast');
+  let toastTimer;
+  function showToast(html, persist){
+    toastEl.innerHTML = html;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    if(!persist){ toastTimer = setTimeout(()=> toastEl.classList.remove('show'), 4200); }
+  }
+
+  /* ---------- avisar antes de salir si hay progreso sin enviar ---------- */
+  window.addEventListener('beforeunload', (e)=>{
+    const hasProgress = state.foto || state.estilo || state.fondo || state.tamano || state.descripcion;
+    if(hasProgress && !orderSubmitted){
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
+  /* ---------- selection cards (estilo / fondo / tamaño) ---------- */
+  document.querySelectorAll('.opt-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const group = card.dataset.group;
+      document.querySelectorAll(`.opt-card[data-group="${group}"]`).forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      state[group] = card.dataset.value;
+
+      // upsell: agregar impresión solo aplica al tamaño Mini (que es solo digital)
+      if(group === 'tamano'){
+        const upsellBox = document.getElementById('upsellBox');
+        const upsellCheckbox = document.getElementById('upsellCheckbox');
+        if(state.tamano === 'mini'){
+          upsellBox.style.display = 'block';
+        } else {
+          upsellBox.style.display = 'none';
+          upsellCheckbox.checked = false;
+          state.impresion = false;
+        }
+      }
+      updateSummary();
+    });
+  });
+
+  document.getElementById('upsellCheckbox').addEventListener('change', (e)=>{
+    state.impresion = e.target.checked;
+    updateSummary();
+  });
+
+  /* ---------- upload ---------- */
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const previewWrap = document.getElementById('previewWrap');
+  const previewImg = document.getElementById('previewImg');
+  const previewName = document.getElementById('previewName');
+  const previewSize = document.getElementById('previewSize');
+  const previewRemove = document.getElementById('previewRemove');
+
+  function handleFile(file){
+    if(!file || !file.type.startsWith('image/')) return;
+    state.foto = file;
+    const reader = new FileReader();
+    reader.onload = e => {
+      previewImg.src = e.target.result;
+      photoDataUrl = e.target.result;
+      updatePreview();
+    };
+    reader.readAsDataURL(file);
+    previewName.textContent = file.name;
+    previewSize.textContent = (file.size/1024/1024).toFixed(1) + ' MB';
+    previewWrap.classList.add('show');
+    dropzone.style.display = 'none';
+    updateSummary();
+  }
+
+  fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+  ['dragenter','dragover'].forEach(evt=>{
+    dropzone.addEventListener(evt, e=>{ e.preventDefault(); dropzone.classList.add('drag'); });
+  });
+  ['dragleave','drop'].forEach(evt=>{
+    dropzone.addEventListener(evt, e=>{ e.preventDefault(); dropzone.classList.remove('drag'); });
+  });
+  dropzone.addEventListener('drop', e=>{
+    const file = e.dataTransfer.files[0];
+    if(file) handleFile(file);
+  });
+  previewRemove.addEventListener('click', ()=>{
+    state.foto = null;
+    photoDataUrl = null;
+    fileInput.value = '';
+    previewWrap.classList.remove('show');
+    dropzone.style.display = 'block';
+    updateSummary();
+    updatePreview();
+  });
+
+  /* ---------- description ---------- */
+  const descInput = document.getElementById('descInput');
+  const charCount = document.getElementById('charCount');
+  descInput.addEventListener('input', ()=>{
+    state.descripcion = descInput.value;
+    charCount.textContent = descInput.value.length;
+  });
+
+  /* ---------- summary + price ---------- */
+  const labelMap = {
+    estilo:  { normal:'Normal', divertido:'Divertido', tierno:'Tierno' },
+    fondo:   { liso:'Color liso', degradado:'Degradado pop', escena:'Escena temática', transparente:'Transparente' },
+    tamano:  { mini:'Mini · 20×20', chico:'Chico · 30×40', mediano:'Mediano · 40×50', grande:'Grande · 50×70' }
+  };
+
+  function updatePreview(){
+    const box = document.getElementById('previewBox');
+    const photoEl = document.getElementById('previewPhoto');
+    const placeholderEl = document.getElementById('previewPlaceholder');
+
+    box.classList.remove('pv-liso','pv-degradado','pv-escena','pv-transparente');
+    if(state.fondo) box.classList.add('pv-' + state.fondo);
+
+    box.classList.remove('pv-est-normal','pv-est-divertido','pv-est-tierno');
+    if(state.estilo) box.classList.add('pv-est-' + state.estilo);
+
+    const ratios = { mini:'1 / 1', chico:'3 / 4', mediano:'4 / 5', grande:'5 / 7' };
+    box.style.aspectRatio = state.tamano ? ratios[state.tamano] : '1 / 1';
+
+    if(photoDataUrl){
+      photoEl.src = photoDataUrl;
+      photoEl.style.display = 'block';
+      placeholderEl.style.display = 'none';
+    } else {
+      photoEl.style.display = 'none';
+      placeholderEl.style.display = 'flex';
+    }
+  }
+
+  function updateSummary(){
+    document.getElementById('sumFoto').textContent = state.foto ? '✓ Subida' : 'Pendiente';
+    document.getElementById('sumFoto').classList.toggle('pending', !state.foto);
+
+    document.getElementById('sumEstilo').textContent = state.estilo ? labelMap.estilo[state.estilo] : 'Pendiente';
+    document.getElementById('sumEstilo').classList.toggle('pending', !state.estilo);
+
+    document.getElementById('sumFondo').textContent = state.fondo ? labelMap.fondo[state.fondo] : 'Pendiente';
+    document.getElementById('sumFondo').classList.toggle('pending', !state.fondo);
+
+    document.getElementById('sumTamano').textContent = state.tamano ? labelMap.tamano[state.tamano] : 'Pendiente';
+    document.getElementById('sumTamano').classList.toggle('pending', !state.tamano);
+
+    const showImpresion = state.tamano === 'mini' && state.impresion;
+    document.getElementById('sumImpresionLine').style.display = showImpresion ? 'flex' : 'none';
+
+    const total = calcularPrecio(state);
+    document.getElementById('sumTotal').textContent = formatCLP(total);
+    document.getElementById('mobileTotal').textContent = formatCLP(total);
+
+    updatePreview();
+  }
+  updateSummary();
+
+  /* ---------- preselect from query params (?estilo=&fondo=&tamano=), usadas
+     por los botones de precios y por la galería para llegar con todo listo ---------- */
+  const params = new URLSearchParams(window.location.search);
+  ['estilo','fondo','tamano'].forEach(group=>{
+    const value = params.get(group);
+    if(value && labelMap[group] && labelMap[group][value]){
+      const card = document.querySelector(`.opt-card[data-group="${group}"][data-value="${value}"]`);
+      if(card){ card.click(); }
+    }
+  });
+
+  /* ---------- progress bar + active step tracking ---------- */
+  const stepBlocks = document.querySelectorAll('.step-block');
+  const progressFill = document.getElementById('progressFill');
+  const progressLabels = document.querySelectorAll('.progress-labels li');
+  const totalSteps = stepBlocks.length;
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting){
+        const idx = Number(entry.target.dataset.step);
+        progressFill.style.width = (((idx+1)/totalSteps)*100) + '%';
+        progressLabels.forEach(li=> li.classList.toggle('active', Number(li.dataset.step) === idx));
+      }
+    });
+  }, { threshold:0.4, rootMargin:'-100px 0px -40% 0px' });
+  stepBlocks.forEach(b=>io.observe(b));
+
+  /* ---------- submit / whatsapp handoff ---------- */
+  function buildMessage(){
+    const lines = [
+      'Hola! Quiero pedir un retrato Poppet 🎉',
+      '',
+      `Estilo: ${state.estilo ? labelMap.estilo[state.estilo] : '-'}`,
+      `Fondo: ${state.fondo ? labelMap.fondo[state.fondo] : '-'}`,
+      `Tamaño: ${state.tamano ? labelMap.tamano[state.tamano] : '-'}`,
+      (state.tamano === 'mini' && state.impresion) ? 'Con impresión física agregada (+$10.000)' : '',
+      `Total estimado: ${formatCLP(calcularPrecio(state))}`,
+      '',
+      state.descripcion ? `Sobre mi mascota: ${state.descripcion}` : '',
+      '',
+      (state.foto ? 'Te voy a adjuntar la foto de mi mascota en este chat.' : '')
+    ].filter(Boolean);
+    return lines.join('\n');
+  }
+
+  function isComplete(){
+    return state.foto && state.estilo && state.fondo && state.tamano;
+  }
+
+  function goToFirstMissing(){
+    const order = [
+      { key:'foto', el:document.getElementById('step-foto') },
+      { key:'estilo', el:document.getElementById('step-estilo') },
+      { key:'fondo', el:document.getElementById('step-fondo') },
+      { key:'tamano', el:document.getElementById('step-tamano') }
+    ];
+    const missing = order.find(o => !state[o.key]);
+    if(missing){
+      missing.el.scrollIntoView({ behavior:'smooth', block:'center' });
+      missing.el.classList.add('shake');
+      setTimeout(()=>missing.el.classList.remove('shake'), 400);
+    }
+  }
+
+  function handleSubmit(){
+    if(!isComplete()){
+      document.getElementById('missingHint').classList.add('show');
+      goToFirstMissing();
+      showToast('Te faltan pasos por completar — te llevamos al primero 👆');
+      return;
+    }
+    document.getElementById('missingHint').classList.remove('show');
+    orderSubmitted = true;
+
+    const url = `https://wa.me/56900000000?text=${encodeURIComponent(buildMessage())}`;
+    showToast('✨ ¡Listo! Te llevamos a WhatsApp para cerrar tu pedido…', true);
+
+    setTimeout(()=>{
+      window.open(url, '_blank');
+      showToast(`✅ Deberías ver WhatsApp abierto en una nueva pestaña. <a href="${url}" target="_blank">¿No pasó nada? Haz clic aquí</a>`, true);
+    }, 800);
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+  document.getElementById('mobileSubmit').addEventListener('click', handleSubmit);
+
+});
+</script>
+
+</body>
+</html>
