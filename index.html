@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poppet — Retratos POP de tu mascota</title>
+<meta name="description" content="Poppet transforma la foto de tu mascota en un retrato pop hecho a mano: normal, divertido o tierno. Pide el tuyo por WhatsApp.">
+<meta name="color-scheme" content="light only">
+<meta name="theme-color" content="#FCF4E7">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FCF4E7;
+    --cream-2:#F7EAD6;
+    --ink:#221C18;
+    --coral:#FF7A57;
+    --teal:#4CB3A3;
+    --purple:#9B7FD6;
+    --yellow:#F6B531;
+    --pink:#F16C90;
+    --shadow: 0 10px 0 rgba(34,28,24,0.9);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{
+    scroll-behavior:smooth;
+    color-scheme:light;
+    background:var(--cream);
+  }
+  body{
+    color-scheme:light;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Quicksand', sans-serif;
+    font-weight:600;
+    overflow-x:hidden;
+  }
+  /* lock form controls, scrollbars, etc. to light regardless of OS/browser dark mode */
+  input, textarea, select, button{ color-scheme:light; }
+  h1,h2,h3,.display{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    line-height:1.02;
+    letter-spacing:-0.01em;
+  }
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  img,svg{display:block; max-width:100%;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none;}
+  section{position:relative;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px;}
+
+  /* reduced motion */
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  ::selection{background:var(--yellow); color:var(--ink);}
+
+  /* ---------- utility blob shapes ---------- */
+  .blob{
+    border-radius:42% 58% 61% 39% / 45% 40% 60% 55%;
+  }
+  .blob2{ border-radius:63% 37% 41% 59% / 52% 45% 55% 48%; }
+  .blob-anim{ animation: morph 9s ease-in-out infinite; }
+  @keyframes morph{
+    0%,100%{ border-radius:42% 58% 61% 39% / 45% 40% 60% 55%; }
+    33%{ border-radius:58% 42% 39% 61% / 55% 62% 38% 45%; }
+    66%{ border-radius:48% 52% 55% 45% / 40% 55% 45% 60%; }
+  }
+  .float{ animation: floaty 5s ease-in-out infinite; }
+  .float-slow{ animation: floaty 7.5s ease-in-out infinite; }
+  @keyframes floaty{
+    0%,100%{ transform:translateY(0) rotate(var(--r,0deg)); }
+    50%{ transform:translateY(-14px) rotate(var(--r,0deg)); }
+  }
+
+  /* spark dashes echoing the logo mark */
+  .spark{ position:absolute; }
+  .spark svg{ width:100%; height:100%; }
+  .spark-spin{ animation: spinwig 6s ease-in-out infinite; }
+  @keyframes spinwig{
+    0%,100%{ transform:rotate(-6deg) scale(1); }
+    50%{ transform:rotate(8deg) scale(1.08); }
+  }
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky; top:0; z-index:50;
+    background:rgba(252,244,231,0.86);
+    backdrop-filter:blur(8px);
+    border-bottom:3px solid var(--ink);
+  }
+  nav.wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:82px;
+  }
+  .logo{ display:flex; align-items:center; gap:2px; font-family:'Fredoka'; font-weight:700; font-size:1.7rem; }
+  .logo span{ display:inline-block; }
+  .logo .p1{color:var(--coral);}
+  .logo .o{color:var(--teal);}
+  .logo .p2{color:var(--purple);}
+  .logo .e{color:var(--yellow);}
+  .logo .t{color:var(--pink);}
+  .logo-crown{ width:22px; margin-right:2px; transform:rotate(-8deg) translateY(-6px); }
+
+  .nav-links{ display:flex; gap:34px; font-weight:600; font-size:0.98rem; }
+  .nav-links a{ position:relative; padding:4px 0; }
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:-3px; height:3px; width:0%;
+    background:var(--coral); border-radius:3px; transition:width .25s ease;
+  }
+  .nav-links a:hover::after{ width:100%; }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Fredoka'; font-weight:600; font-size:0.95rem;
+    padding:13px 26px; border-radius:999px;
+    border:3px solid var(--ink);
+    background:var(--coral); color:var(--ink);
+    box-shadow: var(--shadow);
+    transition: transform .16s ease, box-shadow .16s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{ transform:translate(-2px,-3px); box-shadow:0 13px 0 rgba(34,28,24,0.9); }
+  .btn:active{ transform:translate(0,2px); box-shadow:0 4px 0 rgba(34,28,24,0.9); }
+  .btn-ghost{ background:transparent; }
+  .btn-yellow{ background:var(--yellow); }
+  .btn-teal{ background:var(--teal); }
+  .btn-pink{ background:var(--pink); }
+  .btn-sm{ padding:9px 18px; font-size:0.85rem; border-width:2px; box-shadow:0 6px 0 rgba(34,28,24,0.9);}
+
+  .burger{
+    display:none; width:44px; height:44px; border-radius:12px;
+    border:3px solid var(--ink); background:var(--yellow);
+    flex:none; align-items:center; justify-content:center; gap:4px; flex-direction:column;
+  }
+  .burger span{ display:block; width:20px; height:3px; background:var(--ink); border-radius:2px; transition:transform .25s ease, opacity .25s ease; }
+  .burger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .burger.open span:nth-child(2){ opacity:0; }
+  .burger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+  .mobile-menu{
+    display:none; max-height:0; overflow:hidden; background:var(--cream);
+    border-bottom:3px solid var(--ink); transition:max-height .3s ease;
+  }
+  .mobile-menu.open{ max-height:420px; }
+  .mobile-menu ul{ padding:10px 28px 22px; display:flex; flex-direction:column; gap:4px; }
+  .mobile-menu a{
+    font-family:'Fredoka'; font-size:1.05rem; padding:12px 4px; border-bottom:2px dashed rgba(34,28,24,0.15);
+  }
+  .mobile-menu .btn{ margin-top:12px; width:fit-content; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding:78px 0 40px; overflow:visible; }
+  .hero-grid{ display:grid; grid-template-columns:1.05fr 0.95fr; gap:40px; align-items:center; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--ink); color:var(--cream);
+    font-family:'Fredoka'; font-size:0.8rem; font-weight:600;
+    padding:7px 16px; border-radius:999px; margin-bottom:22px;
+    transform:rotate(-2deg);
+  }
+  .hero h1{ font-size:3.6rem; margin-bottom:22px; }
+  .hero h1 .c1{color:var(--coral);}
+  .hero h1 .c2{color:var(--purple);}
+  .hero h1 .c3{color:var(--teal);}
+  .hero h1 .stroke{
+    -webkit-text-stroke:2.5px var(--ink);
+  }
+  .hero p.lead{ font-size:1.15rem; max-width:480px; margin-bottom:30px; line-height:1.55; font-weight:600; color:#463c34;}
+  .hero-ctas{ display:flex; gap:16px; flex-wrap:wrap; margin-bottom:20px;}
+  .hero-note{ font-size:0.88rem; color:#6b5f55; font-weight:600; }
+
+  .hero-art{ position:relative; height:460px; }
+  .portrait-card{
+    position:absolute; width:172px; height:200px;
+    background:#fff; border:3px solid var(--ink); border-radius:20px;
+    box-shadow: var(--shadow);
+    padding:10px; display:flex; flex-direction:column; align-items:center;
+  }
+  .portrait-card .frame{
+    width:100%; flex:1; border-radius:14px; display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .portrait-card .tag{ font-family:'Fredoka'; font-size:0.72rem; margin-top:8px; font-weight:600;}
+  .p-card-1{ top:0; left:20px; --r:-8deg; transform:rotate(-8deg); z-index:3; }
+  .p-card-2{ top:60px; right:0; --r:7deg; transform:rotate(7deg); z-index:2; width:150px; height:178px;}
+  .p-card-3{ bottom:0; left:60px; --r:5deg; transform:rotate(5deg); z-index:1; width:160px; height:184px;}
+  .icon-face{ width:70%; height:70%; }
+
+  .marquee{
+    border-top:3px solid var(--ink); border-bottom:3px solid var(--ink);
+    background:var(--ink); color:var(--cream);
+    overflow:hidden; white-space:nowrap; padding:14px 0;
+  }
+  .marquee-track{ display:inline-flex; gap:40px; animation:scrollmq 26s linear infinite; }
+  .marquee span{ font-family:'Fredoka'; font-size:1rem; display:inline-flex; align-items:center; gap:10px;}
+  @keyframes scrollmq{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+
+  /* ---------- section headers ---------- */
+  .sec{ padding:90px 0; }
+  .sec-head{ text-align:center; max-width:620px; margin:0 auto 56px; }
+  .sec-eyebrow{
+    font-family:'Fredoka'; font-size:0.82rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--pink); margin-bottom:10px; display:block;
+  }
+  .sec-head h2{ font-size:2.5rem; margin-bottom:14px; }
+  .sec-head p{ color:#5b4f45; font-size:1.02rem; line-height:1.5; }
+
+  .reveal{ opacity:0; transform:translateY(28px); transition:opacity .6s ease, transform .6s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- styles/estilos ---------- */
+  .styles-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:26px; }
+  .style-card{
+    background:#fff; border:3px solid var(--ink); border-radius:26px;
+    padding:30px 26px; box-shadow:var(--shadow);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .style-card:hover{ transform:translateY(-8px) rotate(-1deg); box-shadow:0 16px 0 rgba(34,28,24,0.9); }
+  .style-icon{
+    width:86px; height:86px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    margin-bottom:20px; border:3px solid var(--ink);
+  }
+  .style-card h3{ font-size:1.35rem; margin-bottom:10px; }
+  .style-card p{ color:#5b4f45; font-size:0.95rem; line-height:1.5; }
+  .sc-1 .style-icon{ background:var(--coral); }
+  .sc-2 .style-icon{ background:var(--teal); }
+  .sc-3 .style-icon{ background:var(--purple); }
+
+  /* ---------- how it works ---------- */
+  .steps{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; position:relative; }
+  .steps::before{
+    content:""; position:absolute; top:44px; left:12%; right:12%; height:3px;
+    background-image:linear-gradient(90deg, var(--ink) 0 10px, transparent 10px 20px);
+    background-size:20px 3px; background-repeat:repeat-x;
+  }
+  .step{ text-align:center; padding:0 20px; position:relative; }
+  .step-num{
+    width:88px; height:88px; border-radius:50%; margin:0 auto 22px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fredoka'; font-size:1.9rem; font-weight:700;
+    border:3px solid var(--ink); background:#fff; position:relative; z-index:2;
+    box-shadow:var(--shadow);
+  }
+  .step:nth-child(1) .step-num{ background:var(--yellow); }
+  .step:nth-child(2) .step-num{ background:var(--pink); }
+  .step:nth-child(3) .step-num{ background:var(--teal); }
+  .step h3{ font-size:1.2rem; margin-bottom:8px; }
+  .step p{ color:#5b4f45; font-size:0.92rem; line-height:1.5; }
+
+  /* ---------- gallery ---------- */
+  .gallery{
+    column-count:4; column-gap:22px;
+  }
+  .g-item{
+    break-inside:avoid; margin-bottom:22px; border:3px solid var(--ink); border-radius:22px;
+    overflow:hidden; background:#fff; box-shadow:var(--shadow);
+    transition:transform .2s ease, box-shadow .2s ease;
+    display:flex; align-items:center; justify-content:center; aspect-ratio:1/1;
+  }
+  .g-item.tall{ aspect-ratio:1/1.25; }
+  .g-item:hover{ transform:translateY(-6px) rotate(-1.5deg); box-shadow:0 14px 0 rgba(34,28,24,0.9); }
+  .g-item svg{ width:62%; height:62%; }
+
+  /* ---------- testimonials ---------- */
+  .testi-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .testi-card{
+    background:#fff; border:3px solid var(--ink); border-radius:22px; padding:26px;
+    box-shadow:var(--shadow);
+  }
+  .stars{ color:var(--yellow); font-size:1.1rem; margin-bottom:12px; letter-spacing:2px;}
+  .testi-card p{ font-size:0.96rem; line-height:1.55; color:#463c34; margin-bottom:18px; }
+  .testi-who{ display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+  .testi-avatar{
+    width:56px; height:56px; border-radius:16px; border:2px dashed var(--ink); flex:none;
+    display:flex; align-items:center; justify-content:center; overflow:hidden;
+  }
+  .testi-avatar svg{ width:60%; height:60%; }
+  .testi-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .testi-name{ font-family:'Fredoka'; font-size:0.95rem; }
+  .testi-pet{ font-size:0.8rem; color:#8a7c70; }
+
+  /* ---------- pricing ---------- */
+  .price-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; align-items:stretch; }
+  .price-card{
+    background:#fff; border:3px solid var(--ink); border-radius:26px; overflow:hidden;
+    box-shadow:var(--shadow); display:flex; flex-direction:column;
+    transition:transform .2s ease;
+  }
+  .price-card:hover{ transform:translateY(-6px); }
+  .price-top{ padding:26px 26px 20px; color:var(--ink); }
+  .price-card.feat{ transform:scale(1.04); }
+  .price-card.feat .price-top{ position:relative; }
+  .badge{
+    position:absolute; top:-14px; right:20px; background:var(--ink); color:var(--cream);
+    font-family:'Fredoka'; font-size:0.72rem; padding:6px 12px; border-radius:999px; transform:rotate(4deg);
+  }
+  .price-top h3{ font-size:1.3rem; margin-bottom:6px; }
+  .price-top .amount{ font-family:'Fredoka'; font-size:2.1rem; margin:10px 0 4px; }
+  .price-top .amount span{ font-size:0.9rem; font-family:'Quicksand'; font-weight:600; }
+  .price-top p{ font-size:0.85rem; color:#5b4f45; }
+  .pc-1 .price-top{ background:var(--cream-2); }
+  .pc-2 .price-top{ background:var(--yellow); }
+  .pc-3 .price-top{ background:var(--teal); }
+  .price-body{ padding:22px 26px 28px; flex:1; display:flex; flex-direction:column; }
+  .price-body ul{ flex:1; margin-bottom:22px; }
+  .price-body li{ font-size:0.9rem; padding:7px 0; display:flex; align-items:flex-start; gap:8px; color:#463c34; }
+  .price-body li::before{ content:"●"; color:var(--coral); font-size:0.6rem; margin-top:5px; }
+
+  /* ---------- payment methods strip ---------- */
+  .pay-strip{ text-align:center; }
+  .pay-label{ font-family:'Fredoka'; font-size:0.8rem; letter-spacing:0.04em; text-transform:uppercase; color:#8a7c70; margin-bottom:20px; }
+  .pay-badges{ display:flex; flex-wrap:wrap; justify-content:center; gap:14px; }
+  .pay-badge{
+    display:flex; align-items:center; gap:9px; background:#fff; border:2px solid var(--ink); border-radius:14px;
+    padding:12px 20px; box-shadow:0 5px 0 rgba(34,28,24,0.9); font-family:'Fredoka'; font-size:0.88rem;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .pay-badge:hover{ transform:translateY(-3px); box-shadow:0 8px 0 rgba(34,28,24,0.9); }
+  .pay-badge svg{ width:22px; height:22px; flex:none; }
+  .pay-badge .pb-icon{ width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex:none; }
+
+  .pay-row{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:24px; }
+  .pay-logo-slot{
+    height:48px; width:170px; background:transparent; display:flex; align-items:center;
+  }
+  .pay-logo-slot img{ max-width:100%; max-height:100%; object-fit:contain; }
+  .pay-logo-slot.slot-left{ justify-self:start; justify-content:flex-start; }
+  .pay-logo-slot.slot-right{ justify-self:end; justify-content:flex-end; }
+  @media (max-width:760px){
+    .pay-row{ grid-template-columns:1fr; justify-items:center; gap:18px; }
+    .pay-logo-slot.slot-left, .pay-logo-slot.slot-right{ justify-self:center; justify-content:center; order:2; }
+    .pay-badges{ order:1; }
+  }
+
+  /* ---------- faq ---------- */
+  .faq{ max-width:760px; margin:0 auto; }
+  .faq-item{ border:3px solid var(--ink); border-radius:18px; margin-bottom:14px; overflow:hidden; background:#fff; }
+  .faq-q{
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    padding:18px 22px; font-family:'Fredoka'; font-size:1rem; text-align:left;
+  }
+  .faq-q .plus{
+    width:28px; height:28px; border-radius:50%; border:2px solid var(--ink); flex:none;
+    display:flex; align-items:center; justify-content:center; font-size:1.1rem; transition:transform .25s ease;
+  }
+  .faq-item.open .faq-q .plus{ transform:rotate(135deg); background:var(--yellow); }
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .faq-a p{ padding:0 22px 20px; font-size:0.92rem; line-height:1.55; color:#5b4f45; }
+
+  /* ---------- final cta ---------- */
+  .final-cta{
+    background:var(--ink); color:var(--cream); border-radius:36px; margin:0 28px;
+    padding:64px 40px; text-align:center; position:relative; overflow:hidden;
+  }
+  .final-cta h2{ font-size:2.6rem; margin-bottom:14px; }
+  .final-cta h2 .hl{ color:var(--yellow); }
+  .final-cta p{ color:#d8cfc4; max-width:480px; margin:0 auto 30px; font-size:1.02rem; }
+  #confetti-root{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+  .confetti-piece{ position:absolute; top:-10%; border-radius:3px; animation:confetti-fall linear forwards; }
+  @keyframes confetti-fall{
+    to{ transform:translateY(120vh) rotate(540deg); opacity:0.2; }
+  }
+
+  /* ---------- footer ---------- */
+  footer{ padding:60px 0 30px; }
+  .foot-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:40px; margin-bottom:40px; }
+  footer .logo{ margin-bottom:12px; }
+  footer p.desc{ font-size:0.92rem; color:#5b4f45; max-width:280px; line-height:1.5; }
+  .foot-col h4{ font-family:'Fredoka'; font-size:0.95rem; margin-bottom:14px; }
+  .foot-col li{ margin-bottom:10px; font-size:0.9rem; color:#5b4f45; }
+  .foot-col a:hover{ color:var(--coral); }
+  .foot-bottom{ border-top:2px solid var(--ink); padding-top:22px; display:flex; justify-content:space-between; font-size:0.82rem; color:#8a7c70; flex-wrap:wrap; gap:10px;}
+
+  .wa-float{
+    position:fixed; bottom:26px; right:26px; z-index:60;
+    width:64px; height:64px; border-radius:50%; background:var(--teal);
+    border:3px solid var(--ink); display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 0 rgba(34,28,24,0.9);
+    animation: wafloat 2.6s ease-in-out infinite;
+  }
+  .wa-float:hover{ animation-play-state:paused; transform:scale(1.08) rotate(-6deg); }
+  @keyframes wafloat{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-9px);} }
+  .wa-float svg{ width:30px; height:30px; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-art{ height:380px; margin-top:20px; }
+    .styles-grid, .steps, .testi-grid, .price-grid{ grid-template-columns:1fr; gap:20px; }
+    .steps::before{ display:none; }
+    .foot-grid{ grid-template-columns:1fr 1fr; }
+    .gallery{ column-count:2; }
+    .price-card.feat{ transform:none; }
+    .hero h1{ font-size:2.6rem; }
+  }
+  @media (max-width:860px){
+    .nav-links{ display:none; }
+    .burger{ display:flex; }
+  }
+  @media (max-width:640px){
+    .wrap{ padding:0 20px; }
+    .hero{ padding:44px 0 30px; }
+    .hero h1{ font-size:2.1rem; }
+    .hero p.lead{ font-size:1.02rem; }
+    .hero-ctas .btn{ flex:1; justify-content:center; }
+    .hero-art{ height:300px; }
+    .portrait-card{ width:132px; height:158px; padding:8px; }
+    .p-card-1{ left:4px; top:6px; }
+    .p-card-2{ width:118px; height:142px; right:4px; top:70px; }
+    .p-card-3{ width:126px; height:150px; left:34px; bottom:6px; }
+    .portrait-card .tag{ font-size:0.62rem; }
+    .sec{ padding:56px 0; }
+    .sec-head h2{ font-size:1.7rem; }
+    .sec-head{ margin-bottom:40px; }
+    .style-card:hover, .g-item:hover{ transform:none; }
+    .foot-grid{ grid-template-columns:1fr; }
+    .gallery{ column-count:2; column-gap:14px; }
+    .g-item{ margin-bottom:14px; }
+    .price-card.feat{ transform:none; order:-1; }
+    .final-cta{ margin:0 14px; padding:44px 22px; }
+    .final-cta h2{ font-size:1.7rem; }
+    .wa-float{ width:54px; height:54px; bottom:18px; right:18px; }
+    .wa-float svg{ width:24px; height:24px; }
+  }
+  @media (max-width:380px){
+    .hero h1{ font-size:1.8rem; }
+    .logo{ font-size:1.4rem; }
+    .portrait-card{ width:112px; height:138px; }
+    .p-card-2{ width:100px; height:124px; }
+    .p-card-3{ width:106px; height:130px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ ICON SPRITE (pop-art pet faces) ============ -->
+<svg style="position:absolute; width:0; height:0; overflow:hidden;">
+  <defs>
+    <symbol id="ic-dog" viewBox="0 0 100 100">
+      <path d="M22 30 C10 15, 8 45, 20 46" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+      <path d="M78 30 C90 15, 92 45, 80 46" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="50" cy="52" r="30" fill="none" stroke="currentColor" stroke-width="7"/>
+      <circle cx="40" cy="48" r="3.4" fill="currentColor"/>
+      <circle cx="60" cy="48" r="3.4" fill="currentColor"/>
+      <path d="M46 60 Q50 65 54 60" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+      <ellipse cx="50" cy="56" rx="5" ry="4" fill="currentColor"/>
+    </symbol>
+    <symbol id="ic-cat" viewBox="0 0 100 100">
+      <path d="M28 34 L18 12 L38 26 Z" fill="currentColor"/>
+      <path d="M72 34 L82 12 L62 26 Z" fill="currentColor"/>
+      <circle cx="50" cy="54" r="28" fill="none" stroke="currentColor" stroke-width="7"/>
+      <circle cx="41" cy="50" r="3.2" fill="currentColor"/>
+      <circle cx="59" cy="50" r="3.2" fill="currentColor"/>
+      <path d="M46 62 Q50 66 54 62" fill="none" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+      <path d="M20 56 L34 54 M20 62 L34 60 M80 56 L66 54 M80 62 L66 60" stroke="currentColor" stroke-width="3.4" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ic-rabbit" viewBox="0 0 100 100">
+      <path d="M36 42 C30 10, 20 8, 24 44" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+      <path d="M64 42 C70 10, 80 8, 76 44" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="50" cy="58" r="26" fill="none" stroke="currentColor" stroke-width="7"/>
+      <circle cx="42" cy="54" r="3.2" fill="currentColor"/>
+      <circle cx="58" cy="54" r="3.2" fill="currentColor"/>
+      <ellipse cx="50" cy="62" rx="4.5" ry="3.6" fill="currentColor"/>
+      <path d="M46 66 Q50 70 54 66" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ic-hamster" viewBox="0 0 100 100">
+      <circle cx="24" cy="34" r="12" fill="none" stroke="currentColor" stroke-width="6"/>
+      <circle cx="76" cy="34" r="12" fill="none" stroke="currentColor" stroke-width="6"/>
+      <circle cx="50" cy="55" r="30" fill="none" stroke="currentColor" stroke-width="7"/>
+      <circle cx="40" cy="52" r="3.2" fill="currentColor"/>
+      <circle cx="60" cy="52" r="3.2" fill="currentColor"/>
+      <ellipse cx="50" cy="60" rx="4.5" ry="3.6" fill="currentColor"/>
+      <path d="M30 66 Q50 78 70 66" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
+    </symbol>
+    <symbol id="ic-bird" viewBox="0 0 100 100">
+      <path d="M50 14 L42 26 L58 26 Z" fill="currentColor"/>
+      <circle cx="50" cy="52" r="27" fill="none" stroke="currentColor" stroke-width="7"/>
+      <circle cx="42" cy="48" r="3.2" fill="currentColor"/>
+      <path d="M52 56 L68 60 L52 62 Z" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <nav class="wrap">
+    <a href="#top" class="logo" aria-label="Poppet — inicio">
+      <svg class="logo-crown" viewBox="0 0 60 40" fill="var(--ink)"><path d="M2 16 L16 26 L20 2 L30 20 L40 2 L44 26 L58 16 L52 34 L8 34 Z"/></svg>
+      <span class="p1">P</span><span class="o">o</span><span class="p2">p</span><span class="e">p</span><span class="e">e</span><span class="t">t</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#estilos">Estilos</a></li>
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="galeria.html">Galería</a></li>
+      <li><a href="#precios">Precios</a></li>
+      <li><a href="#preguntas">Preguntas</a></li>
+    </ul>
+    <a class="btn btn-sm" href="creacion.html">Pide el tuyo 🐾</a>
+    <button class="burger" id="burgerBtn" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#estilos">Estilos</a></li>
+      <li><a href="#como-funciona">Cómo funciona</a></li>
+      <li><a href="galeria.html">Galería</a></li>
+      <li><a href="#precios">Precios</a></li>
+      <li><a href="#preguntas">Preguntas</a></li>
+      <a class="btn btn-sm" href="creacion.html">Pide el tuyo 🐾</a>
+    </ul>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">✨ retratos pop para mascotas ✨</span>
+      <h1>Tu <span class="c1">mascota</span> merece ser <span class="c2 stroke">ARTE</span> <span class="c3">pop</span>.</h1>
+      <p class="lead">Mándanos una foto y la convertimos en un retrato hecho a mano: normal, divertido o tierno. 100% inspirado en tu peludo, cero plantillas.</p>
+      <div class="hero-ctas">
+        <a class="btn" href="creacion.html">Pedir mi retrato 🎨</a>
+        <a class="btn btn-ghost" href="#estilos">Ver estilos</a>
+      </div>
+      <p class="hero-note">🐶 +800 mascotas retratadas · envíos a todo Chile</p>
+    </div>
+
+    <div class="hero-art">
+      <div class="spark spark-spin" style="top:-6px; right:60px; width:38px; height:38px; color:var(--purple);">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"><path d="M8 4 L10 18 M20 2 L18 16 M30 8 L22 20"/></svg>
+      </div>
+      <div class="portrait-card p-card-1 float" style="--r:-8deg;">
+        <div class="frame" style="background:var(--coral);"><svg class="icon-face" viewBox="0 0 100 100" style="color:#fff;"><use href="#ic-dog"/></svg></div>
+        <span class="tag">Tierno 🥹</span>
+      </div>
+      <div class="portrait-card p-card-2 float-slow" style="--r:7deg;">
+        <div class="frame" style="background:var(--purple);"><svg class="icon-face" viewBox="0 0 100 100" style="color:#fff;"><use href="#ic-cat"/></svg></div>
+        <span class="tag">Divertido 😜</span>
+      </div>
+      <div class="portrait-card p-card-3 float" style="--r:5deg;">
+        <div class="frame" style="background:var(--teal);"><svg class="icon-face" viewBox="0 0 100 100" style="color:#fff;"><use href="#ic-rabbit"/></svg></div>
+        <span class="tag">Normal 🖼️</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee">
+  <div class="marquee-track" id="marquee">
+    <span>🐾 100% hecho a mano</span><span>✨ Entrega en 5 días</span><span>🎁 Regalo perfecto</span><span>📦 Envíos a todo Chile</span><span>🐾 100% hecho a mano</span><span>✨ Entrega en 5 días</span><span>🎁 Regalo perfecto</span><span>📦 Envíos a todo Chile</span>
+  </div>
+</div>
+
+<!-- ============ ESTILOS ============ -->
+<section class="sec" id="estilos">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow">Elige tu vibra</span>
+      <h2>Tres formas de ver a tu mascota</h2>
+      <p>Cada retrato se dibuja a partir de tu foto — el estilo define la actitud, no la mascota.</p>
+    </div>
+    <div class="styles-grid">
+      <div class="style-card sc-1 reveal">
+        <div class="style-icon"><svg width="46" height="46" viewBox="0 0 100 100" style="color:#fff;"><use href="#ic-dog"/></svg></div>
+        <h3>Normal</h3>
+        <p>Un retrato fiel y cálido, con los detalles y la mirada que hacen única a tu mascota.</p>
+      </div>
+      <div class="style-card sc-2 reveal">
+        <div class="style-icon"><svg width="46" height="46" viewBox="0 0 100 100" style="color:#fff;"><use href="#ic-bird"/></svg></div>
+        <h3>Divertido</h3>
+        <p>Versión caricatura: expresiones exageradas, poses chistosas y mucha personalidad pop.</p>
+      </div>
+      <div class="style-card sc-3 reveal">
+        <div class="style-icon"><svg width="46" height="46" viewBox="0 0 100 100" style="color:#fff;"><use href="#ic-hamster"/></svg></div>
+        <h3>Tierno</h3>
+        <p>Ojos grandes, mejillas suaves y formas redondeadas — para derretir corazones.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COMO FUNCIONA ============ -->
+<section class="sec" id="como-funciona" style="background:var(--cream-2);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow">El proceso</span>
+      <h2>De la foto al cuadro en 3 pasos</h2>
+      <p>Así de simple: tú mandas la foto, nosotros ponemos el arte.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <h3>Envía la foto</h3>
+        <p>Nos escribes por WhatsApp y nos cuentas cómo es tu mascota.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <h3>Elige el estilo</h3>
+        <p>Normal, divertido o tierno — y el tamaño que más te guste.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <h3>Recibe tu arte</h3>
+        <p>Lo dibujamos a mano y te lo enviamos listo para colgar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GALERIA ============ -->
+<section class="sec" id="galeria">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow">Portafolio</span>
+      <h2>Algunos peludos que ya son arte</h2>
+      <p>Una muestra de estilos y formatos — cada retrato es único como su mascota.</p>
+    </div>
+    <div class="gallery">
+      <div class="g-item reveal" style="background:var(--coral);"><svg style="color:#fff;"><use href="#ic-dog"/></svg></div>
+      <div class="g-item tall reveal" style="background:var(--purple);"><svg style="color:#fff;"><use href="#ic-cat"/></svg></div>
+      <div class="g-item reveal" style="background:var(--yellow);"><svg style="color:var(--ink);"><use href="#ic-rabbit"/></svg></div>
+      <div class="g-item tall reveal" style="background:var(--teal);"><svg style="color:#fff;"><use href="#ic-hamster"/></svg></div>
+      <div class="g-item reveal" style="background:var(--pink);"><svg style="color:#fff;"><use href="#ic-bird"/></svg></div>
+      <div class="g-item tall reveal" style="background:var(--coral);"><svg style="color:#fff;"><use href="#ic-cat"/></svg></div>
+      <div class="g-item reveal" style="background:var(--teal);"><svg style="color:#fff;"><use href="#ic-dog"/></svg></div>
+      <div class="g-item tall reveal" style="background:var(--purple);"><svg style="color:#fff;"><use href="#ic-hamster"/></svg></div>
+    </div>
+    <div style="text-align:center; margin-top:36px;" class="reveal">
+      <a class="btn btn-ghost" href="galeria.html">Ver galería completa 🖼️</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONIOS ============ -->
+<section class="sec" style="background:var(--cream-2);">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow">Lo dicen ellos</span>
+      <h2>Dueños felices, mascotas inmortalizadas</h2>
+    </div>
+    <div class="testi-grid">
+      <!--
+        .testi-avatar es el espacio para el retrato de esa reseña (como una foto
+        de perfil de foro). Para poner tu webp real, reemplaza el <svg>...</svg>
+        de adentro por: <img src="ruta/a/retrato.webp" alt="Retrato de Tostado">
+      -->
+      <div class="testi-card reveal">
+        <div class="testi-who">
+          <div class="testi-avatar" style="background:var(--coral);"><svg style="color:#fff;"><use href="#ic-dog"/></svg></div>
+          <div><div class="testi-name">Javiera M.</div><div class="testi-pet">Dueña de Tostado 🐶</div></div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p>"Pedí el estilo divertido de mi golden y quedó igual a su cara de 'quiero comida'. Se lo regalé a mi mamá y lloró de la risa."</p>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-who">
+          <div class="testi-avatar" style="background:var(--purple);"><svg style="color:#fff;"><use href="#ic-cat"/></svg></div>
+          <div><div class="testi-name">Rodrigo P.</div><div class="testi-pet">Dueño de Mishu 🐱</div></div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p>"El estilo tierno de mi gata quedó tan bien que ahora es el cuadro más grande del living. Súper rápido el envío también."</p>
+      </div>
+      <div class="testi-card reveal">
+        <div class="testi-who">
+          <div class="testi-avatar" style="background:var(--teal);"><svg style="color:#fff;"><use href="#ic-rabbit"/></svg></div>
+          <div><div class="testi-name">Camila S.</div><div class="testi-pet">Dueña de Copito 🐰</div></div>
+        </div>
+        <div class="stars">★★★★★</div>
+        <p>"Encargué el retrato normal de mi conejo que ya no está con nosotros. Lo hicieron con muchísimo cariño, quedé encantada."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRECIOS ============ -->
+<section class="sec" id="precios">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow">Precios</span>
+      <h2>Un pop para cada bolsillo</h2>
+      <p>Todos incluyen archivo digital en alta resolución. El impreso es opcional.</p>
+    </div>
+    <div class="price-grid">
+      <div class="price-card pc-1 reveal">
+        <div class="price-top">
+          <h3>Mini Pop</h3>
+          <div class="amount">$15.000<span>digital</span></div>
+          <p>Un retrato, un estilo, una mascota feliz.</p>
+        </div>
+        <div class="price-body">
+          <ul>
+            <li>1 mascota</li>
+            <li>Elige normal, divertido o tierno</li>
+            <li>Archivo digital en alta resolución</li>
+            <li>1 ronda de ajustes</li>
+          </ul>
+          <a class="btn btn-sm btn-ghost" style="justify-content:center;" href="creacion.html?tamano=mini">Elegir Mini</a>
+        </div>
+      </div>
+      <div class="price-card pc-2 feat reveal">
+        <div class="price-top">
+          <span class="badge">el favorito</span>
+          <h3>Pop Clásico</h3>
+          <div class="amount">$25.000<span>+ impresión</span></div>
+          <p>Tu retrato enmarcado, listo para colgar.</p>
+        </div>
+        <div class="price-body">
+          <ul>
+            <li>1 mascota</li>
+            <li>Estilo a elección</li>
+            <li>Impresión 30x40 cm + marco</li>
+            <li>2 rondas de ajustes</li>
+            <li>Envío incluido</li>
+          </ul>
+          <a class="btn btn-sm" style="justify-content:center;" href="creacion.html?tamano=chico">Elegir Clásico</a>
+        </div>
+      </div>
+      <div class="price-card pc-3 reveal">
+        <div class="price-top">
+          <h3>Pop Familia</h3>
+          <div class="amount">$42.000<span>2 mascotas</span></div>
+          <p>Para las multi-mascota que no pueden elegir solo una.</p>
+        </div>
+        <div class="price-body">
+          <ul>
+            <li>Hasta 2 mascotas en un cuadro</li>
+            <li>Estilo a elección por mascota</li>
+            <li>Impresión 40x50 cm + marco</li>
+            <li>Envío incluido</li>
+          </ul>
+          <a class="btn btn-sm btn-ghost" style="justify-content:center;" href="creacion.html?tamano=grande">Elegir Familia</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FORMAS DE PAGO ============ -->
+<section class="sec pay-strip" id="pagos" style="background:var(--cream-2);">
+  <div class="wrap">
+    <!--
+      Espacios reservados y transparentes para los logos horizontales oficiales.
+      Para insertarlos, agrega dentro de cada .pay-logo-slot algo como:
+      <img src="ruta/a/transbank.svg" alt="Transbank">
+      <img src="ruta/a/mercadopago.svg" alt="Mercado Pago">
+      (sin fondo ni borde: el espacio ya existe y hereda el color de la página)
+    -->
+    <div class="pay-label reveal">Formas de pago</div>
+    <div class="pay-row reveal">
+      <div class="pay-logo-slot slot-left" aria-label="Espacio para el logo de Transbank">
+        <!-- <img src="ruta/a/transbank.svg" alt="Transbank"> -->
+      </div>
+      <div class="pay-badges">
+        <div class="pay-badge">
+          <span class="pb-icon" style="background:var(--purple);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10M19 21V10M3 10l9-6 9 6M8 21v-6h8v6"/></svg>
+          </span>
+          Transferencia bancaria
+        </div>
+        <div class="pay-badge">
+          <span class="pb-icon" style="background:var(--yellow);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--ink)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+          </span>
+          Pagos online seguros
+        </div>
+      </div>
+      <div class="pay-logo-slot slot-right" aria-label="Espacio para el logo de Mercado Pago">
+        <!-- <img src="ruta/a/mercadopago.svg" alt="Mercado Pago"> -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="sec" id="preguntas">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-eyebrow">Preguntas</span>
+      <h2>Antes de escribirnos</h2>
+    </div>
+    <div class="faq">
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Qué foto debo mandar?</span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Idealmente una foto nítida, con buena luz y donde se vea bien la cara de tu mascota. Entre más clara la foto, mejor queda el retrato.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Cuánto se demora el pedido?</span><span class="plus">+</span></button>
+        <div class="faq-a"><p>El archivo digital lo entregamos en 3 a 5 días hábiles. Si pediste impresión, suma 2 a 4 días más de envío según tu comuna.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Puedo pedir más de una mascota en el mismo cuadro?</span><span class="plus">+</span></button>
+        <div class="faq-a"><p>¡Sí! Es lo que incluye el plan Pop Familia. Si son más de 2 mascotas, escríbenos y te damos una cotización a medida.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Hacen envíos fuera de Puerto Montt?</span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Sí, enviamos a todo Chile. El archivo digital llega por WhatsApp o correo, y las impresiones viajan bien empacadas por courier.</p></div>
+      </div>
+      <div class="faq-item reveal">
+        <button class="faq-q"><span>¿Y si mi mascota ya no está?</span><span class="plus">+</span></button>
+        <div class="faq-a"><p>Hacemos retratos conmemorativos con todo el cariño del mundo. Cuéntanos y trabajamos contigo el estilo y los detalles que más la representen.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<section class="sec" style="padding-bottom:100px;">
+  <div class="final-cta reveal">
+    <div id="confetti-root"></div>
+    <h2>Convierte a tu mascota en <span class="hl">arte pop</span> hoy.</h2>
+    <p>Escríbenos por WhatsApp, cuéntanos de tu peludo y en unos días tienes tu retrato listo.</p>
+    <button class="btn btn-yellow" id="ctaConfetti" style="color:var(--ink);">Quiero mi retrato 🎉</button>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#top" class="logo">
+          <svg class="logo-crown" viewBox="0 0 60 40" fill="var(--ink)"><path d="M2 16 L16 26 L20 2 L30 20 L40 2 L44 26 L58 16 L52 34 L8 34 Z"/></svg>
+          <span class="p1">P</span><span class="o">o</span><span class="p2">p</span><span class="e">p</span><span class="e">e</span><span class="t">t</span>
+        </a>
+        <p class="desc">Retratos pop hechos a mano para las mascotas que más quieres. Normal, divertido o tierno — tú eliges la vibra.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Navegación</h4>
+        <ul>
+          <li><a href="#estilos">Estilos</a></li>
+          <li><a href="#como-funciona">Cómo funciona</a></li>
+          <li><a href="galeria.html">Galería</a></li>
+          <li><a href="#precios">Precios</a></li>
+        </ul>
+      </div>
+      <div class="foot-col">
+        <h4>Contacto</h4>
+        <ul>
+          <li><a href="https://wa.me/56900000000" target="_blank" rel="noopener">WhatsApp</a></li>
+          <li><a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a></li>
+          <li><a href="mailto:hola@poppet.cl">hola@poppet.cl</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Poppet. Todos los derechos reservados.</span>
+      <span>Hecho con 🐾 en Chile</span>
+    </div>
+  </div>
+</footer>
+
+<a class="wa-float" href="https://wa.me/56900000000" target="_blank" rel="noopener" aria-label="Escríbenos por WhatsApp">
+  <svg viewBox="0 0 32 32" fill="var(--ink)"><path d="M16 3C9 3 3.3 8.7 3.3 15.7c0 2.5.7 4.8 1.9 6.8L3 29l6.7-2.1c1.9 1 4.1 1.6 6.3 1.6 7 0 12.7-5.7 12.7-12.7S23 3 16 3zm0 23.1c-2 0-3.9-.5-5.5-1.5l-.4-.2-4 1.2 1.2-3.9-.3-.4a10.4 10.4 0 0 1-1.7-5.6C5.3 9.9 10.1 5.1 16 5.1S26.7 9.9 26.7 15.7 21.9 26.1 16 26.1zm5.8-7.7c-.3-.2-1.9-.9-2.2-1s-.5-.2-.7.2-.8 1-1 1.2-.4.2-.7.1a8.7 8.7 0 0 1-2.6-1.6 9.6 9.6 0 0 1-1.8-2.2c-.2-.3 0-.5.1-.7l.5-.5c.2-.2.2-.3.3-.5s0-.4 0-.5-.7-1.7-1-2.3-.5-.5-.7-.5h-.6a1.2 1.2 0 0 0-.9.4A3.6 3.6 0 0 0 9.4 12c0 1.6 1.2 3.2 1.4 3.4s2.3 3.6 5.7 5a19 19 0 0 0 1.9.7 4.6 4.6 0 0 0 2.1.1c.6-.1 1.9-.8 2.2-1.5s.3-1.4.2-1.5-.3-.2-.6-.4z"/></svg>
+</a>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // duplicate marquee content already inline for seamless loop
+
+  // reveal-on-scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      }
+    });
+  },{ threshold:0.14 });
+  revealEls.forEach((el,i)=>{
+    el.style.transitionDelay = (i % 6) * 60 + 'ms';
+    io.observe(el);
+  });
+
+  // mobile menu toggle
+  const burgerBtn = document.getElementById('burgerBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  if(burgerBtn && mobileMenu){
+    burgerBtn.addEventListener('click', ()=>{
+      const isOpen = mobileMenu.classList.toggle('open');
+      burgerBtn.classList.toggle('open', isOpen);
+      burgerBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    mobileMenu.querySelectorAll('a').forEach(link=>{
+      link.addEventListener('click', ()=>{
+        mobileMenu.classList.remove('open');
+        burgerBtn.classList.remove('open');
+        burgerBtn.setAttribute('aria-expanded','false');
+      });
+    });
+  }
+
+  // faq accordion
+  document.querySelectorAll('.faq-item').forEach(item=>{
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', ()=>{
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(o=>{
+        o.classList.remove('open');
+        o.querySelector('.faq-a').style.maxHeight = null;
+      });
+      if(!isOpen){
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+
+  // confetti burst
+  const confettiColors = ['#FF7A57','#4CB3A3','#9B7FD6','#F6B531','#F16C90','#FCF4E7'];
+  function burstConfetti(root, count){
+    for(let i=0;i<count;i++){
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      const size = 6 + Math.random()*8;
+      el.style.width = size+'px';
+      el.style.height = (size*0.4)+'px';
+      el.style.left = Math.random()*100+'%';
+      el.style.background = confettiColors[Math.floor(Math.random()*confettiColors.length)];
+      el.style.animationDuration = (2 + Math.random()*1.8)+'s';
+      el.style.animationDelay = (Math.random()*0.3)+'s';
+      root.appendChild(el);
+      setTimeout(()=>el.remove(), 4200);
+    }
+  }
+  const ctaBtn = document.getElementById('ctaConfetti');
+  const confettiRoot = document.getElementById('confetti-root');
+  ctaBtn.addEventListener('click', ()=>{
+    burstConfetti(confettiRoot, 60);
+    setTimeout(()=>{ window.location.href = 'creacion.html'; }, 250);
+  });
+
+});
+</script>
+
+</body>
+</html>
