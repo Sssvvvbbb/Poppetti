@@ -97,14 +97,8 @@
     display:flex; align-items:center; justify-content:space-between;
     height:82px;
   }
-  .logo{ display:flex; align-items:center; gap:2px; font-family:'Fredoka'; font-weight:700; font-size:1.7rem; }
-  .logo span{ display:inline-block; }
-  .logo .p1{color:var(--coral);}
-  .logo .o{color:var(--teal);}
-  .logo .p2{color:var(--purple);}
-  .logo .e{color:var(--yellow);}
-  .logo .t{color:var(--pink);}
-  .logo-crown{ width:22px; margin-right:2px; transform:rotate(-8deg) translateY(-6px); }
+  .logo{ display:flex; align-items:center; gap:2px; }
+  .logo img{ height:36px; width:auto; display:block; }
 
   .nav-links{ display:flex; gap:34px; font-weight:600; font-size:0.98rem; }
   .nav-links a{ position:relative; padding:4px 0; }
@@ -428,7 +422,7 @@
   }
   @media (max-width:380px){
     .hero h1{ font-size:1.8rem; }
-    .logo{ font-size:1.4rem; }
+    .logo img{ height:28px; }
     .portrait-card{ width:112px; height:138px; }
     .p-card-2{ width:100px; height:124px; }
     .p-card-3{ width:106px; height:130px; }
@@ -489,8 +483,7 @@
 <header>
   <nav class="wrap">
     <a href="#top" class="logo" aria-label="Poppet — inicio">
-      <svg class="logo-crown" viewBox="0 0 60 40" fill="var(--ink)"><path d="M2 16 L16 26 L20 2 L30 20 L40 2 L44 26 L58 16 L52 34 L8 34 Z"/></svg>
-      <span class="p1">P</span><span class="o">o</span><span class="p2">p</span><span class="e">p</span><span class="e">e</span><span class="t">t</span>
+      <img src="assets/Poppet logo PNG transparente.png" alt="Poppet">
     </a>
     <ul class="nav-links">
       <li><a href="#estilos">Estilos</a></li>
@@ -825,8 +818,7 @@
     <div class="foot-grid">
       <div>
         <a href="#top" class="logo">
-          <svg class="logo-crown" viewBox="0 0 60 40" fill="var(--ink)"><path d="M2 16 L16 26 L20 2 L30 20 L40 2 L44 26 L58 16 L52 34 L8 34 Z"/></svg>
-          <span class="p1">P</span><span class="o">o</span><span class="p2">p</span><span class="e">p</span><span class="e">e</span><span class="t">t</span>
+          <img src="assets/Poppet logo PNG transparente.png" alt="Poppet">
         </a>
         <p class="desc">Retratos pop hechos a mano para las mascotas que más quieres. Normal, divertido o tierno — tú eliges la vibra.</p>
       </div>
