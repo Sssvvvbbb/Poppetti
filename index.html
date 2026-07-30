@@ -253,11 +253,30 @@
     break-inside:avoid; margin-bottom:22px; border:3px solid var(--ink); border-radius:22px;
     overflow:hidden; background:#fff; box-shadow:var(--shadow);
     transition:transform .2s ease, box-shadow .2s ease;
-    display:flex; align-items:center; justify-content:center; aspect-ratio:1/1;
+    display:flex; flex-direction:column;
   }
-  .g-item.tall{ aspect-ratio:1/1.25; }
   .g-item:hover{ transform:translateY(-6px) rotate(-1.5deg); box-shadow:0 14px 0 rgba(34,28,24,0.9); }
-  .g-item svg{ width:62%; height:62%; }
+  .g-photo{
+    aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; flex:none;
+    position:relative; overflow:hidden;
+  }
+  .g-photo.tall{ aspect-ratio:1/1.25; }
+  .g-photo svg{ width:56%; height:56%; }
+  .g-photo img{ width:100%; height:100%; object-fit:cover; }
+  .g-info{ padding:14px 16px 16px; display:flex; flex-direction:column; gap:12px; }
+  .g-tags{ display:flex; flex-wrap:wrap; gap:6px; }
+  .g-tag{
+    display:inline-flex; align-items:center; gap:5px; font-family:'Fredoka'; font-size:0.68rem;
+    background:var(--cream-2); border:2px solid var(--ink); border-radius:999px; padding:4px 10px;
+  }
+  .g-tag svg{ width:12px; height:12px; }
+  .g-cta{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    font-family:'Fredoka'; font-weight:600; font-size:0.86rem;
+    background:var(--ink); color:var(--cream); border-radius:999px; padding:10px 14px;
+    transition:transform .15s ease, background .15s ease;
+  }
+  .g-cta:hover{ transform:translateY(-2px); background:var(--coral); }
 
   /* ---------- testimonials ---------- */
   .testi-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
@@ -483,7 +502,7 @@
 <header>
   <nav class="wrap">
     <a href="#top" class="logo" aria-label="Poppet — inicio">
-      <img src="assets/Poppet logo PNG transparente.png" alt="Poppet">
+      <img src="poppet-logo.png" alt="Poppet">
     </a>
     <ul class="nav-links">
       <li><a href="#estilos">Estilos</a></li>
@@ -615,14 +634,103 @@
       <p>Una muestra de estilos y formatos — cada retrato es único como su mascota.</p>
     </div>
     <div class="gallery">
-      <div class="g-item reveal" style="background:var(--coral);"><svg style="color:#fff;"><use href="#ic-dog"/></svg></div>
-      <div class="g-item tall reveal" style="background:var(--purple);"><svg style="color:#fff;"><use href="#ic-cat"/></svg></div>
-      <div class="g-item reveal" style="background:var(--yellow);"><svg style="color:var(--ink);"><use href="#ic-rabbit"/></svg></div>
-      <div class="g-item tall reveal" style="background:var(--teal);"><svg style="color:#fff;"><use href="#ic-hamster"/></svg></div>
-      <div class="g-item reveal" style="background:var(--pink);"><svg style="color:#fff;"><use href="#ic-bird"/></svg></div>
-      <div class="g-item tall reveal" style="background:var(--coral);"><svg style="color:#fff;"><use href="#ic-cat"/></svg></div>
-      <div class="g-item reveal" style="background:var(--teal);"><svg style="color:#fff;"><use href="#ic-dog"/></svg></div>
-      <div class="g-item tall reveal" style="background:var(--purple);"><svg style="color:#fff;"><use href="#ic-hamster"/></svg></div>
+
+      <div class="g-item reveal">
+        <div class="g-photo" style="background:var(--coral);"><svg style="color:#fff;"><use href="#ic-dog"/></svg></div>
+        <div class="g-info">
+          <div class="g-tags">
+            <span class="g-tag"><svg><use href="#ic-dog"/></svg> Perro</span>
+            <span class="g-tag">Divertido</span>
+            <span class="g-tag">Fondo liso</span>
+          </div>
+          <a class="g-cta" href="creacion.html?estilo=divertido&fondo=liso">¡Quiero este! →</a>
+        </div>
+      </div>
+
+      <div class="g-item reveal">
+        <div class="g-photo tall" style="background:var(--purple);"><svg style="color:#fff;"><use href="#ic-cat"/></svg></div>
+        <div class="g-info">
+          <div class="g-tags">
+            <span class="g-tag"><svg><use href="#ic-cat"/></svg> Gato</span>
+            <span class="g-tag">Tierno</span>
+            <span class="g-tag">Degradado</span>
+          </div>
+          <a class="g-cta" href="creacion.html?estilo=tierno&fondo=degradado">¡Quiero este! →</a>
+        </div>
+      </div>
+
+      <div class="g-item reveal">
+        <div class="g-photo" style="background:var(--yellow);"><svg style="color:var(--ink);"><use href="#ic-rabbit"/></svg></div>
+        <div class="g-info">
+          <div class="g-tags">
+            <span class="g-tag"><svg><use href="#ic-rabbit"/></svg> Conejo</span>
+            <span class="g-tag">Normal</span>
+            <span class="g-tag">Fondo liso</span>
+          </div>
+          <a class="g-cta" href="creacion.html?estilo=normal&fondo=liso">¡Quiero este! →</a>
+        </div>
+      </div>
+
+      <div class="g-item reveal">
+        <div class="g-photo tall" style="background:var(--teal);"><svg style="color:#fff;"><use href="#ic-hamster"/></svg></div>
+        <div class="g-info">
+          <div class="g-tags">
+            <span class="g-tag"><svg><use href="#ic-hamster"/></svg> Hámster</span>
+            <span class="g-tag">Divertido</span>
+            <span class="g-tag">Escena</span>
+          </div>
+          <a class="g-cta" href="creacion.html?estilo=divertido&fondo=escena">¡Quiero este! →</a>
+        </div>
+      </div>
+
+      <div class="g-item reveal">
+        <div class="g-photo" style="background:var(--pink);"><svg style="color:#fff;"><use href="#ic-bird"/></svg></div>
+        <div class="g-info">
+          <div class="g-tags">
+            <span class="g-tag"><svg><use href="#ic-bird"/></svg> Ave</span>
+            <span class="g-tag">Tierno</span>
+            <span class="g-tag">Transparente</span>
+          </div>
+          <a class="g-cta" href="creacion.html?estilo=tierno&fondo=transparente">¡Quiero este! →</a>
+        </div>
+      </div>
+
+      <div class="g-item reveal">
+        <div class="g-photo tall" style="background:var(--coral);"><svg style="color:#fff;"><use href="#ic-cat"/></svg></div>
+        <div class="g-info">
+          <div class="g-tags">
+            <span class="g-tag"><svg><use href="#ic-cat"/></svg> Gato</span>
+            <span class="g-tag">Divertido</span>
+            <span class="g-tag">Fondo liso</span>
+          </div>
+          <a class="g-cta" href="creacion.html?estilo=divertido&fondo=liso">¡Quiero este! →</a>
+        </div>
+      </div>
+
+      <div class="g-item reveal">
+        <div class="g-photo" style="background:var(--teal);"><svg style="color:#fff;"><use href="#ic-dog"/></svg></div>
+        <div class="g-info">
+          <div class="g-tags">
+            <span class="g-tag"><svg><use href="#ic-dog"/></svg> Perro</span>
+            <span class="g-tag">Normal</span>
+            <span class="g-tag">Escena</span>
+          </div>
+          <a class="g-cta" href="creacion.html?estilo=normal&fondo=escena">¡Quiero este! →</a>
+        </div>
+      </div>
+
+      <div class="g-item reveal">
+        <div class="g-photo tall" style="background:var(--purple);"><svg style="color:#fff;"><use href="#ic-hamster"/></svg></div>
+        <div class="g-info">
+          <div class="g-tags">
+            <span class="g-tag"><svg><use href="#ic-hamster"/></svg> Hámster</span>
+            <span class="g-tag">Tierno</span>
+            <span class="g-tag">Degradado</span>
+          </div>
+          <a class="g-cta" href="creacion.html?estilo=tierno&fondo=degradado">¡Quiero este! →</a>
+        </div>
+      </div>
+
     </div>
     <div style="text-align:center; margin-top:36px;" class="reveal">
       <a class="btn btn-ghost" href="galeria.html">Ver galería completa 🖼️</a>
@@ -818,7 +926,7 @@
     <div class="foot-grid">
       <div>
         <a href="#top" class="logo">
-          <img src="assets/Poppet logo PNG transparente.png" alt="Poppet">
+          <img src="poppet-logo.png" alt="Poppet">
         </a>
         <p class="desc">Retratos pop hechos a mano para las mascotas que más quieres. Normal, divertido o tierno — tú eliges la vibra.</p>
       </div>
