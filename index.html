@@ -367,7 +367,7 @@
 
   /* ---------- footer ---------- */
   footer{ padding:60px 0 30px; }
-  .foot-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:40px; margin-bottom:40px; }
+  .foot-grid{ display:grid; grid-template-columns:1.2fr 1fr 1fr 1fr; gap:40px; margin-bottom:40px; }
   footer .logo{ margin-bottom:12px; }
   footer p.desc{ font-size:0.92rem; color:#5b4f45; max-width:280px; line-height:1.5; }
   .foot-col h4{ font-family:'Fredoka'; font-size:0.95rem; margin-bottom:14px; }
@@ -392,7 +392,7 @@
     .hero-art{ height:380px; margin-top:20px; }
     .styles-grid, .steps, .testi-grid, .price-grid{ grid-template-columns:1fr; gap:20px; }
     .steps::before{ display:none; }
-    .foot-grid{ grid-template-columns:1fr 1fr; }
+    .foot-grid{ grid-template-columns:1fr 1fr 1fr; }
     .gallery{ column-count:2; }
     .price-card.feat{ transform:none; }
     .hero h1{ font-size:2.6rem; }
@@ -847,10 +847,26 @@
           <li><a href="mailto:hola@poppet.cl">hola@poppet.cl</a></li>
         </ul>
       </div>
+      <div class="foot-col">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="legal.html#terminos">Términos y condiciones</a></li>
+          <li><a href="legal.html#compra">Política de compra</a></li>
+          <li><a href="legal.html#envio">Política de envío</a></li>
+        </ul>
+      </div>
     </div>
     <div class="foot-bottom">
       <span>© 2026 Poppet. Todos los derechos reservados.</span>
-      <span>Hecho con 🐾 en Chile</span>
+      <span>Hecho con 🐾 en
+        Chile
+        <svg width="18" height="12" viewBox="0 0 60 40" style="display:inline-block; vertical-align:middle; margin-left:4px; border-radius:2px;" aria-label="Bandera de Chile">
+          <rect width="60" height="40" fill="#D52B1E"/>
+          <rect width="60" height="20" fill="#FFFFFF"/>
+          <rect width="20" height="20" fill="#0039A6"/>
+          <polygon points="10,4 11.76,9.51 17.51,9.51 12.88,13.02 14.65,18.51 10,15 5.35,18.51 7.12,13.02 2.49,9.51 8.24,9.51" fill="#FFFFFF"/>
+        </svg>
+      </span>
     </div>
   </div>
 </footer>
